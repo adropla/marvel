@@ -1,7 +1,5 @@
-
+const thumbnail = 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthumbs.dreamstime.com%2Fb%2Fnot-working-sign-stamp-not-working-sign-stamp-white-background-vector-illustration-129818103.jpg&f=1&nofb=1';
 const RandomCharError = (reloadFunc) => {
-    const thumbnail = 'https://image.flaticon.com/icons/png/512/705/705793.png';
-    
     return (
         <div className="randomchar__block">
             <img src={thumbnail} alt="Character not found" className="randomchar__img"/>
@@ -21,8 +19,6 @@ const RandomCharError = (reloadFunc) => {
 }
 
 const CharListError = (reloadFunc) => {
-    const thumbnail = 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthumbs.dreamstime.com%2Fb%2Fnot-working-sign-stamp-not-working-sign-stamp-white-background-vector-illustration-129818103.jpg&f=1&nofb=1';
-    
     return (
         <div className="char__list">
             <img src={thumbnail} alt="Error" />
@@ -33,5 +29,22 @@ const CharListError = (reloadFunc) => {
     )
 }
 
+const CharInfoError = () => {
+    return (
+        <div className="char__info">
+            <div className="char__basics">
+                <img src={thumbnail} alt="Error"/>
+                <div>
+                    <div className="char__info-name">Error</div>
+                    <div className="char__btns">
+                    </div>
+                </div>
+            </div>
+            <div className="char__descr">
+            </div>
+        </div>
+    )
+}
 
-export {RandomCharError, CharListError};
+
+export {RandomCharError, CharListError, CharInfoError};

@@ -11,7 +11,7 @@ class App extends Component {
     constructor() {
         super()
         this.state = {
-            charInfoId: 1009165
+            charInfoId: null
         }
     }
 
@@ -26,7 +26,7 @@ class App extends Component {
                 <main>
                     <RandomChar/>
                     <div className="char__content">
-                        <CharList onChangeChar={this. onChangeChar}/>
+                        <CharList onChangeChar={this.onChangeChar}/>
                         <CharInfo id={this.state.charInfoId}/>
                     </div>
                     <img className="bg-decoration" src={decoration} alt="vision"/>

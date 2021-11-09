@@ -22,9 +22,10 @@ class MarvelService {
         return this._transformCharacter(res.data.results[0]);
     }
 
-    getComicsByCharacter = async (id) => {
-        const res = await this.getResourses(`${this._apiBase}characters/${id}/comics?${this._apiKey}`);
+    getComicsByCharacter = async (id, limit) => {
+        const res = await this.getResourses(`${this._apiBase}characters/${id}/comics?limit=${limit}&${this._apiKey}`);
         return this._transformComicsByCharacter(res.data.results);
+        // return res;
     }
 
     _transformComicsByCharacter = (comics) => {

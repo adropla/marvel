@@ -10,7 +10,7 @@ class CharList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            offset: 0,
+            offset: 210,
             charList: [],
             loading: true,
             error: false,
@@ -56,11 +56,10 @@ class CharList extends Component {
         .getAllCharacters(9, this.state.offset)
         .then(this.onCharListLoaded)
         .catch(this.onError)
-
         await this.setState({offset: this.state.offset + 9})
     }
-
-    render() {
+    
+    render() {        
         const {loading, error, charList} = this.state;
         const spinner = loading ? <Spinner/> : null;
         const errorMessage = error ? <CharListError reloadFunc={this.updateCharList} /> : null;

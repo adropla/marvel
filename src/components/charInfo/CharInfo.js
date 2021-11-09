@@ -12,19 +12,13 @@ const CharInfo = (props) => {
 
     const [char, setChar] = useState(null);
     const [comics, setComics] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
 
     const spinner = loading ? <Spinner /> : null;
     const errorMess = error ? <CharInfoError /> : null;
     const skeleton = char || loading || error ? null : <Skeleton />
-    const content = !(loading || error || !char || !comics) ? <View char={char} comics={comics}/> : null;
-
-    const onIdNull = (id) => {
-        if (!id) {
-            setError(false);
-        }
-    }    
+    const content = !(loading || error || !char || !comics) ? <View char={char} comics={comics}/> : null;   
 
     const onCharLoaded = (char) => {
         setChar(char);
@@ -44,17 +38,18 @@ const CharInfo = (props) => {
     }
 
     useEffect(() => {
-        setLoading(true);
-        marvelService
-        .getCharacter(id)
-        .then(onCharLoaded)
-        .catch(onError)
-        .finally(onIdNull);
-        marvelService
-        .getComicsByCharacter(id)
-        .then(onComicsLoaded)
-        .catch(onError)
-        .finally(onIdNull);
+        if (id) {
+            setLoading(true);
+            marvelService
+            .getCharacter(id)
+            .then(onCharLoaded)
+            .catch(onError);
+            
+            marvelService
+            .getComicsByCharacter(id, 10)
+            .then(onComicsLoaded)
+            .catch(onError);
+        }
     }, [id]);
 
 
@@ -69,32 +64,34 @@ const CharInfo = (props) => {
 }
 
 const View = ({char, comics}) => {
+    const { thumbnail, name, homepage, wiki, description } = char;
+
     return (
         <>
             <div className="char__basics">
-                <img src={char.thumbnail} alt={char.name}/>
+                <img src={thumbnail} alt={name}/>
                 <div>
-                    <div className="char__info-name">{char.name}</div>
+                    <div className="char__info-name">{name}</div>
                     <div className="char__btns">
-                        <a href={char.homepage} className="button button__main">
+                        <a href={homepage} className="button button__main">
                             <div className="inner">homepage</div>
                         </a>
-                        <a href={char.wiki} className="button button__secondary">
+                        <a href={wiki} className="button button__secondary">
                             <div className="inner">Wiki</div>
                         </a>
                     </div>
                 </div>
             </div>
             <div className="char__descr">
-                {char.description}
+                {description}
             </div>
             <div className="char__comics">Comics:</div>
             <ul className="char__comics-list">
                 {comics.length ? comics.map((item, i) => (
                     <li className="char__comics-item" key={i}>
-                        {item}
+                        {item} 
                     </li>
-                )) : null}
+                )) : "There is no comics with this character"}
             </ul>
         </>
     )

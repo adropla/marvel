@@ -37,10 +37,9 @@ const CharInfoError = () => {
                 <div>
                     <div className="char__info-name">Error</div>
                     <div className="char__btns">
+                        404
                     </div>
                 </div>
-            </div>
-            <div className="char__descr">
             </div>
         </div>
     )

@@ -14,11 +14,16 @@ const CharInfo = (props) => {
     const [comics, setComics] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
+    const [isAttached, setAttach] = useState(false);
 
     const spinner = loading ? <Spinner /> : null;
     const errorMess = error ? <CharInfoError /> : null;
     const skeleton = char || loading || error ? null : <Skeleton />
     const content = !(loading || error || !char || !comics) ? <View char={char} comics={comics}/> : null;   
+
+    // console.log(isAttached);
+
+    const attachedClass = isAttached ? {position: 'fixed', top: '5px', right: '196px'} : {};
 
     const onCharLoaded = (char) => {
         setChar(char);
@@ -37,6 +42,16 @@ const CharInfo = (props) => {
         setError(true);
     }
 
+    const switchAttachedClasses = () => {
+        if (window.scrollY > 445) {
+            if (!isAttached) setAttach(true);          
+        } else {
+            if (isAttached) setAttach(false);
+        }
+        // console.log(window.scrollY);
+        // console.log(isAttached);
+    }
+
     useEffect(() => {
         if (id) {
             setLoading(true);
@@ -52,9 +67,10 @@ const CharInfo = (props) => {
         }
     }, [id]);
 
+    window.addEventListener('scroll', switchAttachedClasses);
 
     return (
-        <div className="char__info">
+        <div className="char__info" style={attachedClass}>
             {skeleton}
             {spinner}
             {errorMess}

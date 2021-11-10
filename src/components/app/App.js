@@ -20,6 +20,8 @@ class App extends Component {
     onChangeChar = (id) => {
         this.setState({charInfoId: id})
     }
+
+    
     
     render() {
         return (

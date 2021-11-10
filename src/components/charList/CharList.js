@@ -14,20 +14,39 @@ class CharList extends Component {
             charList: [],
             loading: true,
             error: false,
+            isCharListEnd: false,
+            limit: 9,
         }
     }
     
     marvelService = new MarvelService();
 
+    onScrollUpdateCharList = () => {
+        const maxHeight = document.documentElement.offsetHeight - document.documentElement.clientHeight;
+        if (window.pageYOffset > maxHeight) {
+            setTimeout(this.updateCharList, 300);
+        }
+    }
+
     componentDidMount() {
         this.updateCharList();
+        window.addEventListener('scroll', this.onScrollUpdateCharList);
+    }
+    
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.onScrollUpdateCharList);
     }
 
     onCharListLoaded = (charList) => {
+        let isEnded = false;
+        if (Object.keys(charList).length < this.state.limit) {
+            isEnded = true;
+        }
         this.setState({
             charList: [...this.state.charList, ...charList],
             loading: false,
-            error: false
+            error: false,
+            isCharListEnd: isEnded,
         })
     }
 
@@ -53,14 +72,15 @@ class CharList extends Component {
         await this.setState({loading: true})
 
         this.marvelService
-        .getAllCharacters(9, this.state.offset)
+        .getAllCharacters(this.state.limit, this.state.offset)
         .then(this.onCharListLoaded)
         .catch(this.onError)
+
         await this.setState({offset: this.state.offset + 9})
     }
     
     render() {        
-        const {loading, error, charList} = this.state;
+        const {loading, error, charList, isCharListEnd} = this.state;
         const spinner = loading ? <Spinner/> : null;
         const errorMessage = error ? <CharListError reloadFunc={this.updateCharList} /> : null;
 
@@ -71,8 +91,12 @@ class CharList extends Component {
                     {charList.length ? this.renderCharList(charList) : null}
                 </ul>
                 {spinner}
-                <button className="button button__main button__long">
-                    <div className="inner" onClick={this.updateCharList}>load more</div>
+                <button 
+                className="button button__main button__long" 
+                onClick={this.updateCharList} 
+                disabled={loading}
+                style={{display: isCharListEnd ? 'none' : 'block'}}>
+                    <div className="inner">load more</div>
                 </button>
             </div>
         )

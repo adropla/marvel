@@ -1,4 +1,7 @@
 import './charInfo.scss';
+
+import { PropTypes } from 'prop-types';
+
 import Spinner from '../spinner/Spinner';
 import Skeleton from '../skeleton/Skeleton';
 import { CharInfoError } from '../errorMessages/ErrorMessages';
@@ -21,10 +24,6 @@ const CharInfo = (props) => {
     const skeleton = char || loading || error ? null : <Skeleton />
     const content = !(loading || error || !char || !comics) ? <View char={char} comics={comics}/> : null;   
 
-    // console.log(isAttached);
-
-    const attachedClass = isAttached ? {position: 'fixed', top: '5px', right: '196px'} : {};
-
     const onCharLoaded = (char) => {
         setChar(char);
         setLoading(false);
@@ -43,13 +42,11 @@ const CharInfo = (props) => {
     }
 
     const switchAttachedClasses = () => {
-        if (window.scrollY > 445) {
-            if (!isAttached) setAttach(true);          
+        if (window.scrollY > 440) {
+            setAttach(true);          
         } else {
-            if (isAttached) setAttach(false);
+            setAttach(false);
         }
-        // console.log(window.scrollY);
-        // console.log(isAttached);
     }
 
     useEffect(() => {
@@ -70,7 +67,7 @@ const CharInfo = (props) => {
     window.addEventListener('scroll', switchAttachedClasses);
 
     return (
-        <div className="char__info" style={attachedClass}>
+        <div className="char__info" style={isAttached ? {position: 'fixed', top: '6px', left: '969px', width: '425px'} : {}}>
             {skeleton}
             {spinner}
             {errorMess}
@@ -111,6 +108,10 @@ const View = ({char, comics}) => {
             </ul>
         </>
     )
+}
+
+CharInfo.propTypes = {
+    charId: PropTypes.number
 }
 
 export default CharInfo;

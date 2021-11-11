@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, createRef } from 'react';
 
 import './charList.scss';
 
@@ -30,11 +30,11 @@ class CharList extends Component {
 
     componentDidMount() {
         this.updateCharList();
-        window.addEventListener('scroll', this.onScrollUpdateCharList);
+        // window.addEventListener('scroll', this.onScrollUpdateCharList);
     }
     
     componentWillUnmount() {
-        window.removeEventListener('scroll', this.onScrollUpdateCharList);
+        // window.removeEventListener('scroll', this.onScrollUpdateCharList);
     }
 
     onCharListLoaded = (charList) => {
@@ -51,14 +51,7 @@ class CharList extends Component {
     }
 
     renderCharList = (charList) => {
-        const {onChangeChar} = this.props;
-        return (
-            charList.map((char) => 
-            <li className="char__item" key={char.id} onClick={() => onChangeChar(char.id)}>
-                <img src={char.thumbnail} alt={char.name}/>
-                <div className="char__name">{char.name}</div>
-            </li>)
-        )
+        
     }
 
     onError = () => {
@@ -78,18 +71,66 @@ class CharList extends Component {
 
         await this.setState({offset: this.state.offset + 9})
     }
+
+    itemRefs = [];
+
+    setRef = (ref) => {
+        this.itemRefs.push(ref);
+    }
+
+    focusOnItem = (id) => {
+        this.itemRefs.forEach(item => item.classList.remove('char__item_selected'));
+        this.itemRefs[id].classList.add('char__item_selected');
+        this.itemRefs[id].focus();
+    }
+
+    renderItems = (charList) => {
+        const {onChangeChar} = this.props;
+        const items = charList.map((char, i) => {
+            return (
+                <li 
+                tabIndex={0}
+                className="char__item" 
+                key={char.id} 
+                ref={this.setRef}
+                onClick={() => {
+                    onChangeChar(char.id)
+                    this.focusOnItem(i);
+                }}
+                onKeyPress={(e) => {
+                    if (e.key === ' ' || e.key === 'Enter') {
+                        onChangeChar(char.id)
+                        this.focusOnItem(i);
+                    }
+                }}
+                >
+                    <img src={char.thumbnail} alt={char.name}/>
+                    <div className="char__name">{char.name}</div>
+                </li>
+            )
+        })
+
+        console.log(items);
+
+        return (
+            <ul className="char__grid">
+                {items}
+            </ul>
+        )
+    }
+
     
     render() {        
         const {loading, error, charList, isCharListEnd} = this.state;
+        const items = this.renderItems(charList);
         const spinner = loading ? <Spinner/> : null;
         const errorMessage = error ? <CharListError reloadFunc={this.updateCharList} /> : null;
+        const content = !(loading || error) ? items : null;
 
         return (
             <div className="char__list">
                 {errorMessage}
-                <ul className="char__grid">
-                    {charList.length ? this.renderCharList(charList) : null}
-                </ul>
+                {content}
                 {spinner}
                 <button 
                 className="button button__main button__long" 

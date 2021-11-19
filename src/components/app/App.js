@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useState } from "react";
 
 import AppHeader from "../appHeader/AppHeader";
 import RandomChar from "../randomChar/RandomChar";
@@ -9,41 +9,33 @@ import { RandomCharError, CharListError, CharInfoError } from '../errorMessages/
 
 import decoration from '../../resources/img/vision.png';
 
-class App extends Component {
-    constructor() {
-        super()
-        this.state = {
-            charInfoId: null
-        }
-    }
+const App = () => {
 
-    onChangeChar = (id) => {
-        this.setState({charInfoId: id})
-    }
+    const [selectedChar, setSelectedChar] = useState(null);
 
+    const onChangeChar = (id) => {
+        setSelectedChar(id)
+    }
     
-    
-    render() {
-        return (
-            <div className="app">
-                <AppHeader/>
-                <main>
-                    <ErrorBoundary errorComponent={<RandomCharError/>}>
-                        <RandomChar/>
+    return (
+        <div className="app">
+            <AppHeader/>
+            <main>
+                <ErrorBoundary errorComponent={<RandomCharError/>}>
+                    <RandomChar/>
+                </ErrorBoundary>
+                <div className="char__content">
+                    <ErrorBoundary errorComponent={<CharListError/>}>
+                        <CharList onChangeChar={onChangeChar}/>
                     </ErrorBoundary>
-                    <div className="char__content">
-                        <ErrorBoundary errorComponent={<CharListError/>}>
-                            <CharList onChangeChar={this.onChangeChar}/>
-                        </ErrorBoundary>
-                        <ErrorBoundary errorComponent={<CharInfoError/>}>
-                            <CharInfo id={this.state.charInfoId}/>
-                        </ErrorBoundary>
-                    </div>
-                    <img className="bg-decoration" src={decoration} alt="vision"/>
-                </main>
-            </div>
-        )
-    }
+                    <ErrorBoundary errorComponent={<CharInfoError/>}>
+                        <CharInfo id={selectedChar}/>
+                    </ErrorBoundary>                        
+                </div>
+                <img className="bg-decoration" src={decoration} alt="vision"/>
+            </main>
+        </div>
+    )
 }
 
 export default App;

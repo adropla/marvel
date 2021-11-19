@@ -6,17 +6,17 @@ import Spinner from '../spinner/Spinner';
 import Skeleton from '../skeleton/Skeleton';
 import { CharInfoError } from '../errorMessages/ErrorMessages';
 import MarvelService from '../../services/MarvelService';
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'; 
 
 const CharInfo = (props) => {
     const marvelService = new MarvelService();
 
     const {id} = props;
 
-    const [char, setChar] = useState(null);
-    const [comics, setComics] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
+    const [char, setChar]         = useState(null);
+    const [comics, setComics]     = useState([]);
+    const [loading, setLoading]   = useState(false);
+    const [error, setError]       = useState(false);
     const [isAttached, setAttach] = useState(false);
 
     const spinner = loading ? <Spinner /> : null;
@@ -64,7 +64,14 @@ const CharInfo = (props) => {
         }
     }, [id]);
 
-    window.addEventListener('scroll', switchAttachedClasses);
+
+    useEffect(() => {
+        window.addEventListener('scroll', switchAttachedClasses);
+
+        return () => {
+            window.removeEventListener('scroll', switchAttachedClasses);
+        }
+    }, []);
 
     return (
         <div className="char__info" style={isAttached ? {position: 'fixed', top: '6px', left: '969px', width: '425px'} : {}}>

@@ -1,53 +1,30 @@
-import { useState, useEffect, useRef } from 'react';
-
 import './charList.scss';
-
-import useMarvelService from '../../services/MarvelService';
-import Spinner from '../spinner/Spinner';
-import {CharListError} from '../errorMessages/ErrorMessages';
+import { useList } from '../../hooks/list.hook';
 
 const CharList = (props) => {
-    const [charList , setCharList] = useState([]);
-    const [offset, setOffset] = useState(210);
-    const [isCharListEnd, setIsCharListEnd] = useState(false);
-    const [limit] = useState(9);
-    
-    const {loading, error, getAllCharacters} = useMarvelService();
+    const base_limit = 9;
+    const base_offset = 210;
+    const {
+        charList, 
+        itemRefs, 
+        focusOnItem, 
+        error, 
+        loading, 
+        errorMessage, 
+        spinner, 
+        isCharListEnd, 
+        getAllCharacters, 
+        setOffset,
+        onItemsListLoaded,
+        offset,
+    } = useList({base_limit, base_offset, updateFunction: updateCharList});
 
-    const onScrollUpdateCharList = () => {
-        const maxHeight = document.documentElement.offsetHeight - document.documentElement.clientHeight;
-        if (window.pageYOffset > maxHeight) {
-            setTimeout(updateCharList, 300);
-        }
-    }
 
-    useEffect(() => {
-        updateCharList();
-        // window.addEventListener('scroll', this.onScrollUpdateCharList);
-        return {
-             // window.removeEventListener('scroll', this.onScrollUpdateCharList);
-        }
-    }, [])
+    function updateCharList() {
+        getAllCharacters(base_limit, offset)
+        .then(onItemsListLoaded)
 
-    const onCharListLoaded = (charListNew) => {
-        let isEnded = Object.keys(charListNew).length < limit;
-        setIsCharListEnd(isEnded);
-        setCharList(charList => [...charList, ...charListNew]);
-    }
-
-    const updateCharList = () => {
-        getAllCharacters(limit, offset)
-        .then(onCharListLoaded)
-
-        setOffset(offset => offset + 9);
-    }
-
-    const itemRefs = useRef([]);
-
-    const focusOnItem = (id) => {
-        itemRefs.current.forEach(item => item.classList.remove('char__item_selected'));
-        itemRefs.current[id].classList.add('char__item_selected');
-        itemRefs.current[id].focus();
+        setOffset(offset => offset + base_limit);
     }
 
     function renderItems(charList) {
@@ -84,8 +61,6 @@ const CharList = (props) => {
 
     const items = renderItems(charList);
 
-    const spinner = loading ? <Spinner/> : null;
-    const errorMessage = error ? <CharListError reloadFunc={updateCharList} /> : null;
     const content = !(error) ? items : null;
 
     return (

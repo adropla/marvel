@@ -5,18 +5,16 @@ import { PropTypes } from 'prop-types';
 import Spinner from '../spinner/Spinner';
 import Skeleton from '../skeleton/Skeleton';
 import { CharInfoError } from '../errorMessages/ErrorMessages';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import { useEffect, useState } from 'react'; 
 
 const CharInfo = (props) => {
-    const marvelService = new MarvelService();
+    const {loading, error, getCharacter, getComicsByCharacter, clearError} = useMarvelService();
 
     const {id} = props;
 
     const [char, setChar]         = useState(null);
     const [comics, setComics]     = useState([]);
-    const [loading, setLoading]   = useState(false);
-    const [error, setError]       = useState(false);
     const [isAttached, setAttach] = useState(false);
 
     const spinner = loading ? <Spinner /> : null;
@@ -26,19 +24,10 @@ const CharInfo = (props) => {
 
     const onCharLoaded = (char) => {
         setChar(char);
-        setLoading(false);
-        setError(false);
     }
 
     const onComicsLoaded = (comics) => {
         setComics(comics);
-        setLoading(false);
-        setError(false);
-    }
-
-    const onError = () => {
-        setLoading(false);
-        setError(true);
     }
 
     const switchAttachedClasses = () => {
@@ -51,16 +40,13 @@ const CharInfo = (props) => {
 
     useEffect(() => {
         if (id) {
-            setLoading(true);
-            marvelService
-            .getCharacter(id)
+            clearError();
+
+            getCharacter(id)
             .then(onCharLoaded)
-            .catch(onError);
             
-            marvelService
-            .getComicsByCharacter(id, 10)
+            getComicsByCharacter(id, 10)
             .then(onComicsLoaded)
-            .catch(onError);
         }
     }, [id]);
 

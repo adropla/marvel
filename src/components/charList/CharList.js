@@ -2,19 +2,17 @@ import { useState, useEffect, useRef } from 'react';
 
 import './charList.scss';
 
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import {CharListError} from '../errorMessages/ErrorMessages';
 
 const CharList = (props) => {
     const [charList , setCharList] = useState([]);
     const [offset, setOffset] = useState(210);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
     const [isCharListEnd, setIsCharListEnd] = useState(false);
     const [limit] = useState(9);
     
-    const marvelService = new MarvelService();
+    const {loading, error, getAllCharacters} = useMarvelService();
 
     const onScrollUpdateCharList = () => {
         const maxHeight = document.documentElement.offsetHeight - document.documentElement.clientHeight;
@@ -33,24 +31,13 @@ const CharList = (props) => {
 
     const onCharListLoaded = (charListNew) => {
         let isEnded = Object.keys(charListNew).length < limit;
-        setLoading(false);
-        setError(false);
         setIsCharListEnd(isEnded);
         setCharList(charList => [...charList, ...charListNew]);
     }
 
-    const onError = () => {
-        setLoading(false);
-        setError(true);
-    }
-
     const updateCharList = () => {
-        setLoading(true);
-
-        marvelService
-        .getAllCharacters(limit, offset)
+        getAllCharacters(limit, offset)
         .then(onCharListLoaded)
-        .catch(onError)
 
         setOffset(offset => offset + 9);
     }
@@ -110,7 +97,7 @@ const CharList = (props) => {
             className="button button__main button__long" 
             onClick={updateCharList} 
             disabled={loading}
-            style={{display: isCharListEnd ? 'none' : 'block'}}>
+            style={{display: (isCharListEnd || error) ? 'none' : 'block'}}>
                 <div className="inner">load more</div>
             </button>
         </div>

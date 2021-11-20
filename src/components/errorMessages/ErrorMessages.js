@@ -15,7 +15,7 @@ const RandomCharError = (reloadFunc) => {
                 </div>
             </div>
         </div>
-    )
+    ) 
 }
 
 const CharListError = (reloadFunc) => {

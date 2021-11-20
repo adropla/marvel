@@ -12,7 +12,7 @@ const AppHeader = () => {
                 <ul>
                     <li><a href="/">Characters</a></li>
                     /
-                    <li><a href="/">Comics</a></li>
+                    <li><a href="">Comics</a></li>
                 </ul>
             </nav>
         </header>

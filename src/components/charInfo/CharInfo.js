@@ -41,7 +41,6 @@ const CharInfo = (props) => {
     useEffect(() => {
         if (id) {
             clearError();
-
             getCharacter(id)
             .then(onCharLoaded)
             

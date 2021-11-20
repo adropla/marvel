@@ -1,51 +1,22 @@
-import { useState } from "react";
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
 
 import AppHeader from "../appHeader/AppHeader";
-import AppBanner from "../appBanner/AppBanner"
-import RandomChar from "../randomChar/RandomChar";
-import CharList from "../charList/CharList";
-import CharInfo from "../charInfo/CharInfo";
-import ComicsList from "../comicsList/ComicsList";
-import ErrorBoundary from "../errorBoundary/ErrorBoundary";
-import { RandomCharError, CharListError, CharInfoError } from '../errorMessages/ErrorMessages'
 
-import decoration from '../../resources/img/vision.png';
-
+import {Home, Comics} from '../pages'
+ 
 const App = () => {
-
-    const [selectedChar, setSelectedChar] = useState(null);
-
-    const onChangeChar = (id) => {
-        setSelectedChar(id)
-    }
-    
-    // return (
-    //     <div className="app">
-    //         <AppHeader/>
-    //         <main>
-    //             <ErrorBoundary errorComponent={<RandomCharError/>}>
-    //                 <RandomChar/>
-    //             </ErrorBoundary>
-    //             <div className="char__content">
-    //                 <ErrorBoundary errorComponent={<CharListError/>}>
-    //                     <CharList onChangeChar={onChangeChar}/>
-    //                 </ErrorBoundary>
-    //                 <ErrorBoundary errorComponent={<CharInfoError/>}>
-    //                     <CharInfo id={selectedChar}/>
-    //                 </ErrorBoundary>                        
-    //             </div>
-    //             <img className="bg-decoration" src={decoration} alt="vision"/>
-    //         </main>
-    //     </div>
-    // )
     return (
-        <div className="app">
-            <AppHeader/>
-            <main>
-                <AppBanner/>
-                <ComicsList/>
-            </main>
-        </div>
+        <Router>
+            <div className="app">
+                <AppHeader/>
+                <main>
+                    <Routes>
+                        <Route path='/' element={<Home/>}/>    
+                        <Route path='/comics' element={<Comics/>}/>
+                    </Routes>
+                </main>
+            </div>
+        </Router>
     )
 }
 

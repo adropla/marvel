@@ -7,12 +7,34 @@ import Spinner from '../components/spinner/Spinner';
 export const useList = (props) => {
     const [limit]             = useState(props.base_limit);
     const [offset, setOffset] = useState(props.base_offset);
-    const updateFunction      = props.updateFunction;
 
     const [itemsList , setItemsList]           = useState([]);
     const [isItemsListEnd, setIsItemsListEnd]  = useState(false);
 
-    const {loading, error, getAllCharacters, getAllComics} = useMarvelService();
+    const {loading, error, getAllComics, getAllCharacters} = useMarvelService();
+
+    const onItemsListLoaded = (itemsListNew) => {
+        let isEnded = Object.keys(itemsListNew).length < limit;
+        setIsItemsListEnd(isEnded);
+        setItemsList(itemsList => [...itemsList, ...itemsListNew]);
+    }
+
+    const updateFunction = () => {
+        const type = props.type;
+        let promise;
+        switch (type) {
+            case 'comics':
+                promise =  getAllComics(limit, offset);
+                break;
+            case 'chars':
+                promise = getAllCharacters(limit, offset);
+                break;
+            default:
+                break;
+        }
+        promise.then(onItemsListLoaded);
+        setOffset(offset => offset + limit);
+    }
 
     const onScrollUpdateItemsList = () => {
         const maxHeight = document.documentElement.offsetHeight - document.documentElement.clientHeight;
@@ -29,11 +51,6 @@ export const useList = (props) => {
         }
     }, [])
 
-    const onItemsListLoaded = (itemsListNew) => {
-        let isEnded = Object.keys(itemsListNew).length < limit;
-        setIsItemsListEnd(isEnded);
-        setItemsList(itemsList => [...itemsList, ...itemsListNew]);
-    }
 
     const itemRefs = useRef([]);
 
@@ -53,13 +70,10 @@ export const useList = (props) => {
         error, 
         loading, 
         itemRefs, 
-        isItemsListEnd, 
+        isItemsListEnd,
         focusOnItem, 
-        getAllCharacters, 
-        getAllComics,
-        onItemsListLoaded, 
-        offset,
-        setOffset
+        onItemsListLoaded,
+        updateFunction,
     }
 }
 

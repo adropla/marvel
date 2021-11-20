@@ -1,15 +1,15 @@
 import { useState } from "react";
 
-import RandomChar from "../../components/randomChar/RandomChar";
-import CharList from "../../components/charList/CharList";
-import CharInfo from "../../components/charInfo/CharInfo";
+import RandomChar from "../randomChar/RandomChar";
+import CharList from "../charList/CharList";
+import CharInfo from "../charInfo/CharInfo";
 
-import ErrorBoundary from "../../components/errorBoundary/ErrorBoundary";
-import { RandomCharError, CharListError, CharInfoError } from '../../components/errorMessages/ErrorMessages'
+import ErrorBoundary from "../errorBoundary/ErrorBoundary";
+import { RandomCharError, CharListError, CharInfoError } from '../errorMessages/ErrorMessages'
 
 import decoration from '../../resources/img/vision.png';
 
-export const Home = () => {
+const Home = () => {
     const [selectedChar, setSelectedChar] = useState(null);
 
     const onChangeChar = (id) => {
@@ -33,3 +33,5 @@ export const Home = () => {
         </>   
     )      
 }
+
+export default Home;

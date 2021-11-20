@@ -5,29 +5,18 @@ const CharList = (props) => {
     const base_limit = 9;
     const base_offset = 210;
     const {
-        charList, 
+        itemsList, 
         itemRefs, 
-        focusOnItem, 
         error, 
         loading, 
         errorMessage, 
         spinner, 
         isCharListEnd, 
-        getAllCharacters, 
-        setOffset,
-        onItemsListLoaded,
-        offset,
-    } = useList({base_limit, base_offset, updateFunction: updateCharList});
+        focusOnItem, 
+        updateFunction,
+    } = useList({base_limit, base_offset, type: 'chars'});
 
-
-    function updateCharList() {
-        getAllCharacters(base_limit, offset)
-        .then(onItemsListLoaded)
-
-        setOffset(offset => offset + base_limit);
-    }
-
-    function renderItems(charList) {
+    const renderItems = (charList) => {
         const items = charList.map((char, i) => {
             return (
                 <li 
@@ -59,7 +48,7 @@ const CharList = (props) => {
         )
     }
 
-    const items = renderItems(charList);
+    const items = renderItems(itemsList);
 
     const content = !(error) ? items : null;
 
@@ -70,7 +59,7 @@ const CharList = (props) => {
             {spinner}
             <button 
             className="button button__main button__long" 
-            onClick={updateCharList} 
+            onClick={updateFunction} 
             disabled={loading}
             style={{display: (isCharListEnd || error) ? 'none' : 'block'}}>
                 <div className="inner">load more</div>

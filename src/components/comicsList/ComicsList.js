@@ -7,26 +7,16 @@ const ComicsList = () => {
     const base_offset = 210;
 
     const {
-        itemsList, 
-        itemRefs, 
-        focusOnItem, 
-        error, 
-        loading, 
-        errorMessage, 
-        spinner, 
-        isItemsListEnd, 
-        getAllComics, 
-        setOffset,
-        onItemsListLoaded,
-        offset,
-    } = useList({base_limit, base_offset, updateFunction: updateComicsList});
+        itemsList,
+        itemRefs,
+        error,
+        errorMessage,
+        loading,
+        spinner,
+        isItemsListEnd,
+        updateFunction,
+    } = useList({base_limit, base_offset, type: 'comics'});
 
-    function updateComicsList() {
-        getAllComics(base_limit, offset)
-        .then(onItemsListLoaded)
-
-        setOffset(offset => offset + base_limit);
-    }
 
     function renderItems(comicsList) {    
         const items = comicsList.map((comics, i) => {
@@ -34,10 +24,11 @@ const ComicsList = () => {
                 <li className="comics__item"
                 tabIndex={0}
                 key={comics.id}
-                ref={el => itemRefs.current[i] = el}
-                onClick={() => focusOnItem(i)}
-                onKeyPress={(e) => {if (e.key === ' ' || e.key === 'Enter') focusOnItem(i)}}>
-                    <a href={comics.homepage} tabIndex={-1}>
+                ref={el => itemRefs.current[i] = el}>
+                    <a href={comics.homepage}
+                    tabIndex={-1}
+                    target="_blank"
+                    rel="noreferrer">
                         <img src={comics.thumbnail} alt={comics.title} className="comics__item-img"/>
                         <div className="comics__item-name">{comics.title}</div>
                         <div className="comics__item-price">{comics.price}$</div>
@@ -63,7 +54,7 @@ const ComicsList = () => {
             {content}
             {spinner}
             <button className="button button__main button__long"
-            onClick={updateComicsList} 
+            onClick={updateFunction} 
             disabled={loading}
             style={{display: (isItemsListEnd || error) ? 'none' : 'block'}}>
                 <div className="inner">load more</div>
